@@ -1,0 +1,1130 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OpenHood Style Guide</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="OpenHood Service Bay style guide v2: logo, color, typography, layout, buttons, icons, dialogs, menus, forms, tables and design patterns with CSS.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Overpass:wght@400;500;600;700;800&family=Overpass+Mono:wght@400;500;600&display=swap">
+
+<!-- =====================================================================
+     OPENHOOD PRODUCT STYLESHEET (Service Bay v2.0)
+     This block is the real CSS for the app. The guide below reads it and
+     prints each section next to its live sample, so code and samples match.
+     ===================================================================== -->
+<style id="oh-css">
+/* @section tokens */
+:root {
+  /* Structure */
+  --oh-navy: #032b43;
+  --oh-navy-2: #0a3a57;
+  --oh-navy-line: #1d4d6a;
+  /* Wayfinding: where you are, what you can tap */
+  --oh-blue: #3f88c5;          /* fills, bars, icons (not small text) */
+  --oh-blue-text: #2e6fa6;     /* links and small blue text */
+  --oh-blue-on-navy: #9fc6e6;
+  --oh-blue-tint: #e3eef8;
+  /* Action and done */
+  --oh-teal: #136f63;
+  --oh-teal-dark: #0e554c;
+  --oh-teal-tint: #e1f0ed;
+  /* Status only */
+  --oh-red: #d00000;    --oh-red-tint: #fde8e8;
+  --oh-amber: #ffba08;  --oh-amber-text: #7a5a00; --oh-amber-tint: #fff3d1;
+  /* Neutrals (navy-tinted) */
+  --oh-canvas: #eef3f6;
+  --oh-paper: #ffffff;
+  --oh-ink: #032b43;
+  --oh-muted: #4f6575;
+  --oh-muted-on-navy: #8aa0b0;
+  --oh-line: #d3dee6;
+  --oh-line-strong: #7891a3;
+  /* Type */
+  --oh-font: "Overpass", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --oh-font-mono: "Overpass Mono", ui-monospace, Menlo, Consolas, monospace;
+  /* Spacing (4 px base) */
+  --oh-space-1: 4px;  --oh-space-2: 8px;  --oh-space-3: 12px; --oh-space-4: 16px;
+  --oh-space-5: 24px; --oh-space-6: 32px; --oh-space-7: 48px; --oh-space-8: 64px;
+  /* Shape & depth */
+  --oh-radius-sm: 3px;
+  --oh-radius: 6px;
+  --oh-shadow-pop: 0 12px 30px -10px rgba(3, 43, 67, .45);
+  --oh-focus: 0 0 0 2px var(--oh-paper), 0 0 0 5px var(--oh-blue);
+}
+
+/* @section base */
+.oh-app {
+  background: var(--oh-canvas);
+  color: var(--oh-ink);
+  font: 400 15px/1.55 var(--oh-font);
+  -webkit-font-smoothing: antialiased;
+}
+.oh-app *, .oh-app *::before, .oh-app *::after { box-sizing: border-box; }
+.oh-app :focus-visible { outline: none; box-shadow: var(--oh-focus); }
+
+/* @section logo */
+.oh-logo { display: inline-flex; align-items: center; gap: 9px; color: inherit; text-decoration: none; }
+.oh-logo__mark {
+  width: 30px; height: 30px; flex: none;
+  display: grid; place-items: center;
+  background: var(--oh-blue); color: var(--oh-paper);
+  border-radius: var(--oh-radius-sm);
+}
+.oh-logo__mark svg { width: 57%; height: 57%; stroke: currentColor; stroke-width: 2.6; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.oh-logo__word { font: 700 21px/1 var(--oh-font); letter-spacing: -.01em; }
+.oh-logo--lg .oh-logo__mark { width: 56px; height: 56px; border-radius: 6px; }
+.oh-logo--lg .oh-logo__word { font-size: 40px; }
+.oh-logo--app-icon .oh-logo__mark { width: 72px; height: 72px; border-radius: 16px; background: var(--oh-navy); color: var(--oh-blue-on-navy); box-shadow: inset 0 -6px 0 var(--oh-blue); }
+
+/* @section type */
+/* Only .oh-display is uppercase and bold. Everything else is sentence case. */
+.oh-display { font: 800 48px/.95 var(--oh-font); letter-spacing: -.005em; text-transform: uppercase; }
+.oh-h1      { font: 600 32px/1.1 var(--oh-font);  letter-spacing: -.01em; text-wrap: balance; margin: 0; }
+.oh-h2      { font: 600 22px/1.2 var(--oh-font);  letter-spacing: -.01em; margin: 0; }
+.oh-h3      { font: 600 17px/1.3 var(--oh-font);  margin: 0; }
+.oh-body    { font: 400 15px/1.55 var(--oh-font); }
+.oh-small   { font: 400 13px/1.5 var(--oh-font); color: var(--oh-muted); }
+.oh-label   { font: 500 12px/1.2 var(--oh-font-mono); color: var(--oh-blue-text); }
+.oh-data    { font: 400 14px/1.4 var(--oh-font-mono); font-variant-numeric: tabular-nums; }
+.oh-price   { font: 600 22px/1 var(--oh-font-mono); font-variant-numeric: tabular-nums; }
+.oh-caption { font: 400 11.5px/1.4 var(--oh-font-mono); color: var(--oh-muted); }
+@media (min-width: 1024px) { .oh-h1 { font-size: 38px; } .oh-display { font-size: 64px; } }
+
+/* @section layout */
+.oh-screen {               /* customer mobile screen */
+  display: flex; flex-direction: column;
+  min-height: 100dvh; max-width: 480px; margin: 0 auto;
+}
+.oh-screen__main { flex: 1; display: flex; flex-direction: column; gap: 14px; padding: var(--oh-space-4); }
+.oh-desk {                 /* advisor desktop */
+  display: grid; grid-template-rows: auto 1fr auto; min-height: 100dvh;
+}
+.oh-desk__main { padding: var(--oh-space-5); max-width: 1440px; width: 100%; margin: 0 auto; }
+.oh-stack    { display: flex; flex-direction: column; gap: var(--oh-space-3); }
+.oh-stack-lg { display: flex; flex-direction: column; gap: var(--oh-space-5); }
+.oh-cluster  { display: flex; flex-wrap: wrap; align-items: center; gap: var(--oh-space-2); }
+.oh-board { display: grid; gap: var(--oh-space-4); grid-template-columns: 1fr; align-items: start; }
+@media (min-width: 600px)  { .oh-board { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .oh-board { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+/* @section buttons */
+.oh-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 48px; padding: 2px 18px 0;
+  border: 1px solid transparent; border-radius: var(--oh-radius);
+  font: 600 15px/1 var(--oh-font);
+  text-decoration: none; cursor: pointer;
+  transition: transform .1s ease, background-color .1s ease, border-color .1s ease;
+}
+.oh-btn svg { width: 18px; height: 18px; margin-top: -2px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.oh-btn:active:not(:disabled) { transform: translateY(1px); }
+.oh-btn--primary   { background: var(--oh-teal); color: var(--oh-paper); box-shadow: inset 0 -3px 0 var(--oh-teal-dark); }
+.oh-btn--primary:hover:not(:disabled) { background: var(--oh-teal-dark); }
+.oh-btn--dark      { background: var(--oh-navy); color: var(--oh-paper); }
+.oh-btn--dark:hover:not(:disabled) { background: var(--oh-navy-2); }
+.oh-btn--secondary { background: var(--oh-paper); color: var(--oh-ink); border-color: var(--oh-line-strong); }
+.oh-btn--secondary:hover:not(:disabled) { background: var(--oh-blue-tint); border-color: var(--oh-blue); }
+.oh-btn--danger    { background: var(--oh-red); color: var(--oh-paper); }
+.oh-btn--danger:hover:not(:disabled) { filter: brightness(.9); }
+.oh-btn--text      { background: none; color: var(--oh-blue-text); min-height: 34px; padding: 2px 4px 0; text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1.5px; }
+.oh-btn--sm    { min-height: 34px; padding: 2px 12px 0; font-size: 13.5px; }
+.oh-btn--block { width: 100%; }
+.oh-btn--icon  { width: 44px; min-height: 44px; padding: 0; }
+.oh-btn--icon svg { margin-top: 0; }
+.oh-btn:disabled, .oh-btn[aria-disabled="true"] {
+  background: var(--oh-canvas); color: var(--oh-line-strong); border-color: var(--oh-line);
+  box-shadow: none; cursor: not-allowed;
+}
+
+/* @section icons */
+.oh-icon {
+  width: 20px; height: 20px; flex: none;
+  stroke: currentColor; fill: none; stroke-width: 1.8;
+  stroke-linecap: round; stroke-linejoin: round;
+  vertical-align: middle;
+}
+.oh-icon--16 { width: 16px; height: 16px; }
+.oh-icon--24 { width: 24px; height: 24px; }
+.oh-icon--fill { fill: currentColor; stroke: none; }
+.oh-icon--accent { color: var(--oh-blue); }
+
+/* @section status */
+/* Red and amber appear only here. */
+.oh-status {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 8px 4px 7px; border-radius: var(--oh-radius-sm);
+  font: 600 12px/1 var(--oh-font);
+  white-space: nowrap; color: var(--c); background: var(--cb);
+}
+.oh-status::before { content: ""; width: 8px; height: 8px; margin-top: -1px; border-radius: 2px; background: var(--dot, var(--c)); }
+.oh-status--red   { --c: var(--oh-red);        --cb: var(--oh-red-tint); }
+.oh-status--amber { --c: var(--oh-amber-text); --cb: var(--oh-amber-tint); --dot: var(--oh-amber); }
+.oh-status--ok    { --c: var(--oh-teal);       --cb: var(--oh-teal-tint); }
+.oh-status--info  { --c: var(--oh-blue-text);  --cb: var(--oh-blue-tint); --dot: var(--oh-blue); }
+.oh-tag {
+  display: inline-block; padding: 4px 7px 3px; border-radius: var(--oh-radius-sm);
+  font: 500 11.5px/1.2 var(--oh-font-mono);
+  background: var(--oh-blue-tint); color: var(--oh-blue-text);
+}
+.oh-tag--navy { background: var(--oh-navy); color: var(--oh-blue-on-navy); }
+.oh-tag--outline { background: transparent; color: var(--oh-ink); box-shadow: inset 0 0 0 1px var(--oh-line-strong); }
+.oh-count {
+  display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 1px 6px 0;
+  border-radius: 999px; background: var(--oh-teal); color: var(--oh-paper);
+  font: 600 11px/1 var(--oh-font-mono);
+}
+
+/* @section dialogs */
+.oh-dialog {
+  width: min(420px, calc(100vw - 32px)); padding: 0;
+  background: var(--oh-paper); color: var(--oh-ink);
+  border: 0; border-top: 5px solid var(--oh-blue); border-radius: var(--oh-radius);
+  box-shadow: var(--oh-shadow-pop);
+}
+.oh-dialog::backdrop { background: rgba(3, 43, 67, .6); }
+.oh-dialog__head { display: flex; align-items: start; justify-content: space-between; gap: 12px; padding: 18px 20px 0; }
+.oh-dialog__body { padding: 12px 20px 4px; display: grid; gap: 12px; }
+.oh-dialog__foot { display: grid; gap: 8px; padding: 16px 20px 20px; }
+.oh-dialog__close { background: none; border: 0; padding: 4px; color: var(--oh-muted); cursor: pointer; border-radius: var(--oh-radius-sm); }
+.oh-dialog--danger { border-top-color: var(--oh-red); }
+.oh-sheet {                 /* mobile bottom sheet */
+  position: fixed; inset: auto 0 0 0; max-height: 85dvh; overflow: auto;
+  background: var(--oh-paper); border-radius: 14px 14px 0 0;
+  box-shadow: var(--oh-shadow-pop);
+  padding: 8px 16px calc(16px + env(safe-area-inset-bottom, 0px));
+}
+.oh-sheet::before { content: ""; display: block; width: 40px; height: 4px; margin: 0 auto 12px; background: var(--oh-line-strong); border-radius: 2px; }
+
+/* @section menus */
+.oh-menu-wrap { position: relative; display: inline-block; }
+.oh-menu-trigger {
+  display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 2px 12px 0;
+  background: var(--oh-paper); color: var(--oh-ink);
+  border: 1px solid var(--oh-line-strong); border-radius: var(--oh-radius);
+  font: 500 14px/1 var(--oh-font); cursor: pointer;
+}
+.oh-menu-trigger[aria-expanded="true"] { border-color: var(--oh-blue); }
+.oh-menu {
+  min-width: 220px; padding: 4px; margin: 0; list-style: none;
+  background: var(--oh-paper); border: 1px solid var(--oh-line); border-radius: var(--oh-radius);
+  box-shadow: var(--oh-shadow-pop);
+}
+.oh-menu-wrap > .oh-menu { position: absolute; top: calc(100% + 4px); left: 0; z-index: 20; }
+.oh-menu__label { padding: 8px 10px 4px; font: 500 11.5px/1 var(--oh-font-mono); color: var(--oh-muted); }
+.oh-menu__item {
+  display: grid; grid-template-columns: 18px 1fr auto; align-items: center; gap: 8px;
+  width: 100%; padding: 9px 10px 7px; border: 0; border-radius: var(--oh-radius-sm);
+  background: none; color: var(--oh-ink); text-align: left; font: 400 14px/1.2 var(--oh-font); cursor: pointer;
+}
+.oh-menu__item > .oh-icon { color: var(--oh-blue); }
+.oh-menu__item:hover, .oh-menu__item:focus-visible { background: var(--oh-blue-tint); box-shadow: none; }
+.oh-menu__item[aria-checked="true"] { font-weight: 600; }
+.oh-menu__item kbd { font: 400 11px/1 var(--oh-font-mono); color: var(--oh-muted); }
+.oh-menu__item--danger, .oh-menu__item--danger > .oh-icon { color: var(--oh-red); }
+.oh-menu__item--danger:hover { background: var(--oh-red-tint); }
+.oh-menu__sep { height: 1px; margin: 4px 0; background: var(--oh-line); }
+
+/* @section forms */
+.oh-field { display: grid; gap: 6px; }
+.oh-field__label { font: 600 13.5px/1.2 var(--oh-font); color: var(--oh-ink); }
+.oh-field__help  { font: 400 12.5px/1.4 var(--oh-font); color: var(--oh-muted); }
+.oh-field__error { font: 500 12.5px/1.4 var(--oh-font); color: var(--oh-red); display: flex; gap: 6px; align-items: center; }
+.oh-input, .oh-select, .oh-textarea {
+  width: 100%; min-height: 44px; padding: 2px 12px 0;
+  background: var(--oh-paper); color: var(--oh-ink);
+  border: 1px solid var(--oh-line-strong); border-radius: var(--oh-radius);
+  font: 400 15px/1.4 var(--oh-font);
+}
+.oh-textarea { padding: 10px 12px; min-height: 96px; resize: vertical; }
+.oh-select { appearance: none; padding-right: 36px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233f88c5' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px; }
+.oh-input::placeholder, .oh-textarea::placeholder { color: var(--oh-muted); }
+.oh-input:focus, .oh-select:focus, .oh-textarea:focus { outline: none; border-color: var(--oh-blue); box-shadow: 0 0 0 3px rgba(63, 136, 197, .3); }
+.oh-input[aria-invalid="true"] { border-color: var(--oh-red); box-shadow: inset 3px 0 0 var(--oh-red); }
+.oh-input:disabled { background: var(--oh-canvas); color: var(--oh-muted); cursor: not-allowed; }
+.oh-search { position: relative; }
+.oh-search .oh-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--oh-blue); pointer-events: none; }
+.oh-search .oh-input { padding-left: 38px; }
+.oh-check { display: flex; align-items: start; gap: 10px; font: 400 14.5px/1.4 var(--oh-font); cursor: pointer; }
+.oh-check input {
+  appearance: none; flex: none; width: 20px; height: 20px; margin: 0; cursor: pointer;
+  background: var(--oh-paper); border: 1.5px solid var(--oh-line-strong); border-radius: var(--oh-radius-sm);
+  display: grid; place-items: center;
+}
+.oh-check input[type="radio"] { border-radius: 50%; }
+.oh-check input:checked { background: var(--oh-teal); border-color: var(--oh-teal); }
+.oh-check input[type="checkbox"]:checked::after { content: ""; width: 10px; height: 5px; border: solid var(--oh-paper); border-width: 0 0 2px 2px; transform: translate(0, -1px) rotate(-45deg); }
+.oh-check input[type="radio"]:checked::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--oh-paper); }
+.oh-check input:focus-visible { box-shadow: var(--oh-focus); }
+.oh-segment { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; padding: 3px; gap: 3px; background: var(--oh-canvas); border: 1px solid var(--oh-line-strong); border-radius: var(--oh-radius); }
+.oh-segment button { min-height: 38px; padding-top: 2px; border: 0; border-radius: var(--oh-radius-sm); background: none; color: var(--oh-muted); font: 600 13.5px/1 var(--oh-font); cursor: pointer; }
+.oh-segment button[aria-pressed="true"] { background: var(--oh-navy); color: var(--oh-paper); }
+.oh-switch { display: inline-flex; align-items: center; gap: 10px; font: 400 14.5px/1.2 var(--oh-font); cursor: pointer; }
+.oh-switch input { appearance: none; width: 40px; height: 22px; margin: 0; border-radius: 999px; background: var(--oh-line-strong); position: relative; cursor: pointer; transition: background .15s; }
+.oh-switch input::after { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--oh-paper); transition: transform .15s; }
+.oh-switch input:checked { background: var(--oh-teal); }
+.oh-switch input:checked::after { transform: translateX(18px); }
+.oh-switch input:focus-visible { box-shadow: var(--oh-focus); }
+.oh-timing { display: grid; grid-template-columns: repeat(3, 1fr); position: relative; }
+.oh-timing::before { content: ""; position: absolute; left: 16.6%; right: 16.6%; top: 15px; height: 4px; background: var(--oh-line); border-radius: 2px; }
+.oh-timing button { position: relative; display: grid; justify-items: center; gap: 8px; padding: 0; border: 0; background: none; font: 500 13px/1 var(--oh-font); color: var(--oh-muted); cursor: pointer; }
+.oh-timing button::before { content: ""; width: 34px; height: 34px; border-radius: 50%; background: var(--oh-paper); border: 2px solid var(--oh-line-strong); }
+.oh-timing button[aria-pressed="true"] { color: var(--oh-ink); font-weight: 600; }
+.oh-timing button[aria-pressed="true"]::before { background: var(--c); border-color: var(--c); box-shadow: inset 0 0 0 5px var(--oh-paper); }
+
+/* @section tables */
+.oh-table-wrap { overflow-x: auto; border: 1px solid var(--oh-line); border-radius: var(--oh-radius); background: var(--oh-paper); }
+.oh-table { width: 100%; border-collapse: collapse; font: 400 14px/1.35 var(--oh-font); }
+.oh-table caption { text-align: left; padding: 14px 14px 2px; font: 600 17px/1.3 var(--oh-font); }
+.oh-table th {
+  padding: 12px 14px 8px; text-align: left; white-space: nowrap;
+  font: 500 11.5px/1 var(--oh-font-mono); color: var(--oh-muted);
+  border-bottom: 2px solid var(--oh-navy);
+}
+.oh-table td { padding: 11px 14px 9px; border-bottom: 1px solid var(--oh-line); vertical-align: middle; }
+.oh-table .oh-num { text-align: right; font-family: var(--oh-font-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.oh-table tbody tr:hover { background: #f6f9fb; }
+.oh-table tbody tr[aria-selected="true"] { background: var(--oh-blue-tint); box-shadow: inset 4px 0 0 var(--oh-blue); }
+.oh-table tfoot td { border-bottom: 0; border-top: 1px dashed var(--oh-line-strong); font-weight: 600; }
+.oh-table tfoot .oh-num { font-size: 18px; }
+.oh-table--compact td { padding: 8px 14px 6px; }
+
+/* @section nav */
+.oh-topbar {
+  display: flex; align-items: center; gap: 16px; padding: 12px 16px;
+  background: var(--oh-navy); color: var(--oh-paper);
+  border-bottom: 4px solid var(--oh-blue);
+}
+.oh-topbar__section { font: 500 13.5px/1 var(--oh-font); color: var(--oh-blue-on-navy); padding-left: 16px; border-left: 1px solid var(--oh-navy-line); }
+.oh-topbar__end { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+@media (min-width: 1024px) { .oh-topbar { padding: 12px 24px; } }
+.oh-tabbar {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  background: var(--oh-navy); padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.oh-tabbar a {
+  position: relative; display: grid; justify-items: center; gap: 4px; padding: 10px 0;
+  font: 500 12px/1 var(--oh-font); color: var(--oh-muted-on-navy); text-decoration: none;
+}
+.oh-tabbar a[aria-current="page"] { color: var(--oh-paper); }
+.oh-tabbar a[aria-current="page"] .oh-icon { color: var(--oh-blue-on-navy); }
+.oh-tabbar a[aria-current="page"]::before { content: ""; position: absolute; top: 0; left: 28%; right: 28%; height: 3px; border-radius: 0 0 2px 2px; background: var(--oh-blue); }
+.oh-back {
+  display: inline-flex; align-items: center; gap: 4px; padding: 6px 0;
+  font: 500 14px/1 var(--oh-font); color: var(--oh-blue-text); text-decoration: none;
+}
+.oh-back:hover { text-decoration: underline; text-underline-offset: 4px; }
+.oh-crumbs { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; margin: 0; padding: 0; font: 400 13px/1 var(--oh-font); color: var(--oh-muted); }
+.oh-crumbs li + li::before { content: "/"; margin-right: 6px; color: var(--oh-line-strong); }
+.oh-crumbs a { color: var(--oh-blue-text); }
+.oh-crumbs [aria-current] { color: var(--oh-ink); font-weight: 600; }
+.oh-stages { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; list-style: none; margin: 0; padding: 0; }
+.oh-stages li { display: grid; gap: 6px; font: 500 11px/1.15 var(--oh-font); color: var(--oh-muted); }
+.oh-stages li::before { content: ""; height: 6px; border-radius: 3px; background: var(--oh-line); }
+.oh-stages li.is-done { color: var(--oh-ink); }
+.oh-stages li.is-done::before { background: var(--oh-teal); }
+.oh-stages li[aria-current="step"] { color: var(--oh-blue-text); font-weight: 700; }
+.oh-stages li[aria-current="step"]::before { background: var(--oh-blue); }
+
+/* @section cards */
+.oh-panel { background: var(--oh-paper); border: 1px solid var(--oh-line); border-radius: var(--oh-radius); padding: 14px; }
+.oh-hero {
+  position: relative; overflow: hidden; display: grid; gap: 10px; padding: 16px 22px 16px 16px;
+  background: var(--oh-navy); color: var(--oh-paper); border-radius: var(--oh-radius); text-decoration: none;
+}
+.oh-hero::after { content: ""; position: absolute; top: 0; right: 0; bottom: 0; width: 6px; background: linear-gradient(var(--oh-blue) 0 50%, var(--oh-teal) 50% 100%); }
+.oh-hero .oh-label { color: var(--oh-blue-on-navy); }
+.oh-list { display: grid; background: var(--oh-paper); border: 1px solid var(--oh-line); border-radius: var(--oh-radius); overflow: hidden; }
+.oh-list__row {
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px;
+  padding: 13px 14px; color: inherit; text-decoration: none; border-top: 1px solid var(--oh-line);
+}
+.oh-list__row:first-child { border-top: 0; }
+.oh-list__row:hover { background: var(--oh-blue-tint); }
+.oh-list__row > .oh-icon:first-child { color: var(--oh-blue); }
+.oh-list__row > .oh-icon:last-child { color: var(--oh-line-strong); }
+.oh-list__title { display: block; font: 600 16px/1.25 var(--oh-font); }
+.oh-list__sub { font: 400 13px/1.4 var(--oh-font); color: var(--oh-muted); }
+.oh-finding {
+  display: grid; gap: 12px; padding: 14px;
+  background: var(--oh-paper); border: 1px solid var(--oh-line); border-left: 6px solid var(--c, var(--oh-red));
+  border-radius: var(--oh-radius);
+}
+.oh-finding--amber { --c: var(--oh-amber); }
+.oh-finding--ok    { --c: var(--oh-teal); }
+.oh-lines { display: grid; gap: 6px; font: 400 13.5px/1.3 var(--oh-font-mono); font-variant-numeric: tabular-nums; }
+.oh-lines > div { display: flex; justify-content: space-between; gap: 12px; }
+.oh-total { display: flex; justify-content: space-between; align-items: baseline; padding-top: 10px; border-top: 1px dashed var(--oh-line-strong); }
+.oh-wo { background: var(--oh-paper); border: 1px solid var(--oh-line); border-radius: var(--oh-radius); overflow: hidden; }
+.oh-wo[aria-current="true"] { border-color: var(--oh-blue); box-shadow: 0 0 0 2px rgba(63, 136, 197, .35); }
+.oh-wo__head { display: flex; justify-content: space-between; align-items: center; padding: 7px 12px 6px; background: #f6f9fb; border-bottom: 1px dashed var(--oh-line); font: 500 11.5px/1 var(--oh-font-mono); color: var(--oh-muted); }
+.oh-wo__body { display: grid; gap: 10px; padding: 12px; }
+.oh-wo__foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 12px; border-top: 1px solid var(--oh-line); }
+.oh-wait { display: inline-flex; align-items: center; gap: 5px; font: 400 12px/1 var(--oh-font-mono); color: var(--oh-muted); }
+.oh-wait--late { color: var(--oh-red); }
+
+/* @section feedback */
+.oh-toast {
+  display: flex; align-items: center; gap: 12px; width: min(360px, calc(100vw - 32px)); padding: 12px 14px;
+  background: var(--oh-navy); color: var(--oh-paper);
+  border-left: 6px solid var(--oh-teal); border-radius: var(--oh-radius); box-shadow: var(--oh-shadow-pop);
+}
+.oh-toast__icon { flex: none; width: 30px; height: 30px; display: grid; place-items: center; background: var(--oh-teal); color: var(--oh-paper); border-radius: 50%; }
+.oh-toast__meta { font: 400 11.5px/1.3 var(--oh-font-mono); color: var(--oh-muted-on-navy); }
+.oh-notice { display: grid; grid-template-columns: auto 1fr; gap: 10px; padding: 12px 14px; border-radius: var(--oh-radius); background: var(--cb); color: var(--oh-ink); border: 1px solid var(--c); }
+.oh-notice > .oh-icon { color: var(--c); }
+.oh-notice--info  { --c: var(--oh-blue);       --cb: var(--oh-blue-tint); }
+.oh-notice--warn  { --c: var(--oh-amber-text); --cb: var(--oh-amber-tint); }
+.oh-notice--error { --c: var(--oh-red);        --cb: var(--oh-red-tint); }
+.oh-bubble { max-width: 84%; padding: 11px 13px 9px; border-radius: var(--oh-radius); font: 400 14.5px/1.45 var(--oh-font); }
+.oh-bubble--me { align-self: flex-end; background: var(--oh-navy); color: var(--oh-paper); border-bottom-right-radius: 2px; }
+.oh-bubble--them { align-self: flex-start; background: var(--oh-paper); border: 1px solid var(--oh-line); border-bottom-left-radius: 2px; }
+.oh-bubble__who { display: block; margin-bottom: 4px; font: 400 11px/1 var(--oh-font-mono); color: var(--oh-muted); }
+.oh-bubble--me .oh-bubble__who { color: var(--oh-muted-on-navy); }
+.oh-chip { padding: 8px 12px 6px; border: 1px solid var(--oh-blue); border-radius: 999px; background: var(--oh-paper); color: var(--oh-blue-text); font: 500 13.5px/1 var(--oh-font); cursor: pointer; }
+.oh-chip:hover { background: var(--oh-blue-tint); }
+
+@media (prefers-reduced-motion: reduce) {
+  .oh-btn, .oh-switch input, .oh-switch input::after { transition: none; }
+}
+</style>
+
+<!-- ====================== GUIDE PAGE CHROME (not part of the app) ====================== -->
+<style>
+/* Layout: sticky index on the left, one section per UI element on the right; samples sit on canvas "bench" panels with their CSS printed below. Single light look by choice. */
+:root {
+  --g-bg: #f4f7f9; --g-surface: #ffffff; --g-ink: #032b43; --g-muted: #4f6575; --g-line: #d3dee6;
+  --g-code-bg: #032b43; --g-code-ink: #e6eef3; --g-code-key: #9fc6e6; --g-code-com: #8aa0b0;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--g-bg); color: var(--g-ink); font: 15px/1.6 var(--oh-font); }
+a { color: inherit; }
+code { font-family: var(--oh-font-mono); font-size: .9em; }
+.g-top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 31; background: var(--oh-navy); }
+.g-top .oh-topbar { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.g-top .ver { margin-left: auto; font: 400 12px/1 var(--oh-font-mono); color: var(--oh-muted-on-navy); }
+.g-shell { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 40px; max-width: 1320px; margin: 0 auto; padding-block: 32px 80px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.g-nav { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 82px); align-self: start; max-height: calc(100dvh - 110px); overflow-y: auto; }
+.g-nav ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; }
+.g-nav a { display: flex; gap: 10px; align-items: baseline; padding: 8px 10px 6px; text-decoration: none; border-radius: 4px; font: 500 14.5px/1.2 var(--oh-font); color: var(--g-muted); border-left: 3px solid transparent; }
+.g-nav a span { font: 400 11px/1 var(--oh-font-mono); width: 18px; }
+.g-nav a:hover { color: var(--g-ink); background: var(--g-surface); }
+.g-nav a.is-on { color: var(--g-ink); background: var(--g-surface); border-left-color: var(--oh-blue); font-weight: 600; }
+.g-nav .copy-all { margin-top: 16px; width: 100%; }
+main { min-width: 0; }
+.g-hero { display: grid; gap: 18px; padding-bottom: 28px; border-bottom: 2px solid var(--g-ink); margin-bottom: 8px; }
+.g-hero h1 { margin: 0; font-size: clamp(44px, 7vw, 84px); line-height: .9; }
+.g-hero p { margin: 0; max-width: 64ch; color: var(--g-muted); font-size: 16.5px; }
+.g-palette { display: flex; gap: 4px; }
+.g-palette i { height: 10px; width: 56px; border-radius: 2px; }
+.g-principles { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 6px; }
+.g-principles div { background: var(--g-surface); border: 1px solid var(--g-line); border-top: 4px solid var(--bt, var(--oh-navy)); padding: 14px; border-radius: 6px; }
+.g-principles b { display: block; font: 600 18px/1.25 var(--oh-font); margin-bottom: 6px; }
+.g-principles p { font-size: 14px; color: var(--g-muted); margin: 0; }
+section.g-sec { padding-top: 52px; scroll-margin-top: 80px; }
+.g-sec-h { display: flex; align-items: baseline; gap: 14px; margin-bottom: 10px; }
+.g-sec-h .no { font: 500 12px/1 var(--oh-font-mono); background: var(--oh-navy); color: var(--oh-blue-on-navy); padding: 6px 8px 5px; border-radius: 4px; }
+.g-sec-h h2 { font: 600 clamp(28px, 3.6vw, 36px)/1.1 var(--oh-font); margin: 0; letter-spacing: -.015em; }
+.g-lede { max-width: 68ch; margin: 0 0 18px; color: var(--g-muted); }
+h3.g-sub { font: 500 12.5px/1 var(--oh-font-mono); color: var(--oh-blue-text); margin: 28px 0 10px; display: flex; align-items: center; gap: 10px; }
+h3.g-sub::after { content: ""; flex: 1; height: 1px; background: var(--g-line); }
+.bench { background: var(--oh-canvas); border: 1px solid var(--g-line); border-radius: 8px; padding: 24px; display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; min-width: 0; }
+.bench.col { flex-direction: column; align-items: stretch; }
+.bench.center { align-items: center; }
+.bench > * { min-width: 0; }
+.rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin: 14px 0 0; }
+.rules div { background: var(--g-surface); border: 1px solid var(--g-line); border-radius: 6px; padding: 12px 14px; font-size: 14px; }
+.rules b { display: flex; align-items: center; gap: 8px; font: 600 13px/1 var(--oh-font); margin-bottom: 8px; }
+.rules b::before { content: ""; width: 9px; height: 9px; border-radius: 2px; background: var(--oh-teal); }
+.rules .dont b::before { background: var(--oh-red); }
+.rules .info b::before { background: var(--oh-blue); }
+.rules ul { margin: 0; padding-left: 18px; }
+.rules li + li { margin-top: 4px; }
+.rules strong { font-weight: 600; }
+details.code { margin-top: 12px; background: var(--g-code-bg); border-radius: 6px; overflow: hidden; }
+details.code summary { display: flex; align-items: center; gap: 10px; padding: 11px 14px 9px; cursor: pointer; list-style: none; font: 500 12.5px/1 var(--oh-font-mono); color: var(--g-code-ink); }
+details.code summary::-webkit-details-marker { display: none; }
+details.code summary::before { content: "+"; width: 18px; height: 18px; display: grid; place-items: center; background: var(--oh-blue); color: #fff; border-radius: 3px; font-size: 14px; }
+details.code[open] summary::before { content: "−"; }
+details.code summary .lines { color: var(--g-code-com); }
+details.code .copy { margin-left: auto; background: transparent; color: var(--g-code-key); border: 1px solid var(--oh-navy-line); padding: 7px 10px 5px; border-radius: 4px; font: 500 11.5px/1 var(--oh-font-mono); cursor: pointer; }
+details.code .copy:hover { border-color: var(--g-code-key); }
+details.code pre { margin: 0; padding: 4px 16px 18px; overflow-x: auto; max-height: 520px; font: 400 12.5px/1.65 var(--oh-font-mono); color: var(--g-code-ink); tab-size: 2; }
+pre .c { color: var(--g-code-com); } pre .p { color: var(--g-code-key); }
+.sw-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; width: 100%; }
+.sw { background: #fff; border: 1px solid var(--g-line); border-radius: 6px; overflow: hidden; }
+.sw i { display: block; height: 76px; border-bottom: 1px solid var(--g-line); }
+.sw div { padding: 10px 12px; display: grid; gap: 3px; }
+.sw b { font: 600 15px/1.2 var(--oh-font); }
+.sw code { font: 400 11.5px/1.35 var(--oh-font-mono); color: var(--g-muted); }
+.sw small { font-size: 12.5px; color: var(--g-muted); line-height: 1.4; }
+.ratio { display: inline-flex; font: 500 10.5px/1 var(--oh-font-mono); padding: 4px 6px 3px; border-radius: 3px; background: var(--oh-teal-tint); color: var(--oh-teal); margin-top: 4px; justify-self: start; }
+.share-bar { display: flex; height: 22px; border-radius: 4px; overflow: hidden; width: 100%; margin-top: 6px; }
+.share-bar i { display: block; }
+.share-key { display: flex; flex-wrap: wrap; gap: 6px 16px; font: 400 12px/1.3 var(--oh-font-mono); color: var(--g-muted); width: 100%; }
+.typerow { display: grid; grid-template-columns: 150px minmax(0, 1fr) 230px; gap: 16px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid var(--oh-line); width: 100%; }
+.typerow:last-child { border-bottom: 0; }
+.typerow code { font: 400 12px/1.4 var(--oh-font-mono); color: var(--oh-blue-text); }
+.typerow .spec { font: 400 12px/1.45 var(--oh-font-mono); color: var(--g-muted); }
+.space-row { display: grid; grid-template-columns: 120px 60px 1fr; gap: 12px; align-items: center; font: 400 12.5px/1 var(--oh-font-mono); width: 100%; }
+.space-row i { display: block; height: 14px; background: var(--oh-blue); border-radius: 2px; }
+.frame { background: #fff; border: 1px solid var(--oh-line-strong); border-radius: 6px; position: relative; font: 400 11px/1.25 var(--oh-font-mono); color: var(--oh-muted); overflow: hidden; }
+.frame .bar { background: var(--oh-navy); color: var(--oh-muted-on-navy); padding: 7px 8px 5px; border-bottom: 3px solid var(--oh-blue); }
+.frame .bar.bottom { border-bottom: 0; border-top: 3px solid var(--oh-blue); }
+.frame .blk { background: var(--oh-blue-tint); border: 1px dashed var(--oh-blue); color: var(--oh-blue-text); padding: 6px; border-radius: 3px; }
+.icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 8px; width: 100%; }
+.icon-grid div { background: #fff; border: 1px solid var(--oh-line); border-radius: 6px; padding: 14px 6px 10px; display: grid; justify-items: center; gap: 8px; font: 400 11px/1.2 var(--oh-font-mono); color: var(--oh-muted); text-align: center; }
+.icon-grid svg { width: 24px; height: 24px; color: var(--oh-navy); }
+.logo-tile { flex: 1 1 240px; min-height: 160px; display: grid; place-items: center; gap: 10px; border-radius: 8px; padding: 24px; border: 1px solid var(--g-line); }
+.logo-tile small { font: 400 11.5px/1 var(--oh-font-mono); color: var(--g-muted); }
+.phone-mini { width: 340px; max-width: 100%; background: var(--oh-canvas); border: 8px solid var(--oh-navy); border-radius: 28px; overflow: hidden; display: flex; flex-direction: column; }
+.phone-mini .body { padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+.inline-dialog { position: static; display: block; }
+.scrim-demo { background: rgba(3, 43, 67, .6); padding: 28px 16px; border-radius: 8px; display: grid; place-items: center; flex: 1 1 360px; }
+.sheet-demo { position: relative; flex: 1 1 300px; max-width: 360px; height: 360px; background: rgba(3, 43, 67, .6); border-radius: 22px; overflow: hidden; border: 8px solid var(--oh-navy); }
+.sheet-demo .oh-sheet { position: absolute; }
+.confirm-demo { flex: 1 1 300px; max-width: 360px; background: var(--oh-teal); color: #fff; border-radius: 8px; padding: 20px; display: grid; gap: 8px; }
+.confirm-demo .oh-label { color: #cfe9e4; }
+.kbd-note { font: 400 12.5px/1.4 var(--oh-font-mono); color: var(--g-muted); margin-top: 8px; }
+footer.g-foot { margin-top: 64px; padding-top: 18px; border-top: 2px solid var(--g-ink); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; font: 400 12px/1.4 var(--oh-font-mono); color: var(--g-muted); }
+
+@media (max-width: 960px) {
+  .g-shell { grid-template-columns: minmax(0, 1fr); gap: 0; padding-top: 0; }
+  .g-nav { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 58px); z-index: 25; max-height: none; overflow-x: auto; background: var(--g-bg); margin: 0 calc(-1 * max(16px, env(safe-area-inset-left, 0px))); padding: 8px max(16px, env(safe-area-inset-left, 0px)); border-bottom: 1px solid var(--g-line); }
+  .g-nav ol { display: flex; gap: 4px; }
+  .g-nav a { white-space: nowrap; border-left: 0; border-bottom: 3px solid transparent; padding: 7px 10px 5px; }
+  .g-nav a.is-on { border-bottom-color: var(--oh-blue); }
+  .g-nav .copy-all { display: none; }
+  .g-hero { padding-top: 28px; }
+  .typerow { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .bench { padding: 16px; }
+}
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+
+<!-- Icon sprite (24 px grid, 1.8 stroke) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-arrow-up-right" viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
+  <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5M5 9.5V20h14V9.5M10 20v-6h4v6"/></symbol>
+  <symbol id="i-car" viewBox="0 0 24 24"><path d="M3 16v-3l2-5.2A2 2 0 0 1 6.9 6.5h10.2a2 2 0 0 1 1.9 1.3L21 13v3h-2M5 16H3M9 16h6"/><circle cx="7" cy="16.5" r="2"/><circle cx="17" cy="16.5" r="2"/></symbol>
+  <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17v.01"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></symbol>
+  <symbol id="i-video" viewBox="0 0 24 24"><rect x="2" y="6" width="14" height="12" rx="1"/><path d="M16 10l6-3v10l-6-3"/></symbol>
+  <symbol id="i-clipboard" viewBox="0 0 24 24"><path d="M9 4h6v3H9zM6 5.5H5v15h14v-15h-1M9 13l2 2 4-4"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M21 3L10 14M21 3l-7 18-4-7-7-4z"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4v16l13-8z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15zM10 20a2 2 0 0 0 4 0"/></symbol>
+  <symbol id="i-sort" viewBox="0 0 24 24"><path d="M4 6h10M4 12h7M4 18h4M18 5v14M15 16l3 3 3-3"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-expand" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3l10 18H2z"/><path d="M12 10v4.5M12 17.5v.01"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></symbol>
+  <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.5 4.5a4.5 4.5 0 0 0 5 6l-9 9a2.1 2.1 0 0 1-3-3l9-9a4.5 4.5 0 0 0-2-3z"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><path d="M3 8h4l2-3h6l2 3h4v12H3z"/><circle cx="12" cy="13.5" r="3.5"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10"/></symbol>
+  <symbol id="i-3d" viewBox="0 0 24 24"><path d="M12 2l9 5v10l-9 5-9-5V7z"/><path d="M3 7l9 5 9-5M12 12v10"/></symbol>
+</svg>
+
+<div class="oh-app" style="background:transparent">
+<header class="g-top">
+  <div class="oh-topbar">
+    <a class="oh-logo" href="#top"><span class="oh-logo__mark"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></span><span class="oh-logo__word">OpenHood</span></a>
+    <span class="oh-topbar__section">Style guide</span>
+    <span class="ver">Service Bay · v2.0</span>
+  </div>
+</header>
+
+<div class="g-shell" id="top">
+  <nav class="g-nav" aria-label="Style guide sections">
+    <ol id="toc"></ol>
+    <button class="oh-btn oh-btn--primary oh-btn--sm copy-all" type="button" id="copyAll">Copy full CSS</button>
+  </nav>
+
+  <main>
+    <div class="g-hero">
+      <div class="oh-cluster"><span class="oh-tag oh-tag--navy">Style guide v2.0</span><span class="oh-tag">Nov 23, 2026</span><span class="oh-tag oh-tag--outline">Customer mobile web + advisor desk</span></div>
+      <h1 class="oh-display">OpenHood<br>Service Bay</h1>
+      <div class="g-palette" aria-hidden="true"><i style="background:var(--oh-navy)"></i><i style="background:var(--oh-blue)"></i><i style="background:var(--oh-teal)"></i><i style="background:var(--oh-red);width:14px"></i><i style="background:var(--oh-amber);width:14px"></i></div>
+      <p>The visual rules for OpenHood, the app that lets auto repair customers inspect findings, ask their technician and approve repairs, and lets service advisors keep visits moving. Every element below shows a live sample and the CSS that draws it. Designers, developers, shop staff and course reviewers all work from this page.</p>
+      <div class="g-principles">
+        <div style="--bt:var(--oh-blue)"><b>Blue shows the way</b><p>Blue marks where you are and what you can tap: the current step, the active tab, links and icons.</p></div>
+        <div style="--bt:var(--oh-teal)"><b>Teal moves the job forward</b><p>Teal is the action color (Approve, Send) and the "done" color. One teal button per screen.</p></div>
+        <div style="--bt:var(--oh-red)"><b>Red and amber are only for status</b><p>They appear on "Needs attention" and "Plan soon", always as a colored square plus a word.</p></div>
+      </div>
+    </div>
+
+    <!-- LOGO -->
+    <section class="g-sec" id="logo" data-title="Logo">
+      <div class="g-sec-h"><span class="no">01</span><h2>Logo</h2></div>
+      <p class="g-lede">The mark is a blue tile with an up-right arrow: the car going up on the lift, and the customer moving forward. The wordmark is Overpass Bold in mixed case. The logo is an artwork, so its weight is fixed and separate from the type rules.</p>
+      <div class="bench">
+        <div class="logo-tile" style="background:var(--oh-navy)"><span class="oh-logo oh-logo--lg" style="color:#fff"><span class="oh-logo__mark"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></span><span class="oh-logo__word">OpenHood</span></span><small style="color:var(--oh-muted-on-navy)">Primary · on navy</small></div>
+        <div class="logo-tile" style="background:#fff"><span class="oh-logo oh-logo--lg" style="color:var(--oh-navy)"><span class="oh-logo__mark"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></span><span class="oh-logo__word">OpenHood</span></span><small>On white · navy wordmark</small></div>
+        <div class="logo-tile" style="background:var(--oh-canvas);flex:0 1 200px"><span class="oh-logo oh-logo--app-icon"><span class="oh-logo__mark"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></span></span><small>App icon · 72 px</small></div>
+      </div>
+      <div class="rules">
+        <div><b>Do</b><ul><li>Keep clear space equal to half the mark's height on every side.</li><li>Minimum size: 24 px mark, 16 px wordmark.</li><li>Use the blue line under the top bar; it continues the mark's color.</li></ul></div>
+        <div class="dont"><b>Don't</b><ul><li>Place the blue tile on blue or on photos.</li><li>Set the wordmark in capitals or stretch it.</li><li>Recolor the mark in red, amber or teal.</li></ul></div>
+      </div>
+      <details class="code" data-css="logo"><summary>CSS · Logo</summary></details>
+    </section>
+
+    <!-- COLOR -->
+    <section class="g-sec" id="color" data-title="Color">
+      <div class="g-sec-h"><span class="no">02</span><h2>Color</h2></div>
+      <p class="g-lede">Five brand colors from one palette. Navy, blue and teal do almost all the work. Red and amber are kept for status, so when they appear, people notice. Every text pair below passes WCAG AA.</p>
+      <div class="bench col" style="background:#fff;gap:8px">
+        <span class="oh-small" style="color:var(--oh-ink);font-weight:600">How much of each, on a typical screen</span>
+        <div class="share-bar" aria-hidden="true"><i style="flex:52;background:var(--oh-canvas);border-right:1px solid var(--oh-line)"></i><i style="flex:20;background:#fff"></i><i style="flex:16;background:var(--oh-navy)"></i><i style="flex:6;background:var(--oh-blue)"></i><i style="flex:4;background:var(--oh-teal)"></i><i style="flex:1;background:var(--oh-red)"></i><i style="flex:1;background:var(--oh-amber)"></i></div>
+        <div class="share-key"><span>Canvas 52%</span><span>White 20%</span><span>Navy 16%</span><span>Blue 6%</span><span>Teal 4%</span><span>Red + amber ≤ 2%</span></div>
+      </div>
+      <h3 class="g-sub">Brand · navy, blue, teal</h3>
+      <div class="bench"><div class="sw-grid" id="sw-brand"></div></div>
+      <h3 class="g-sub">Status · red, amber (status only)</h3>
+      <div class="bench"><div class="sw-grid" id="sw-status"></div></div>
+      <h3 class="g-sub">Neutrals</h3>
+      <div class="bench"><div class="sw-grid" id="sw-neutral"></div></div>
+      <div class="rules">
+        <div><b>Do</b><ul><li>Use plain blue <code>#3F88C5</code> for fills, bars and icons; use <code>--oh-blue-text</code> for small blue text.</li><li>Put white text on teal or navy, never on plain blue (3.8 : 1).</li><li>Pair every status color with its tint and a word.</li></ul></div>
+        <div class="dont"><b>Don't</b><ul><li>Use red or amber for buttons, links, headings or decoration.</li><li>Put text on amber; it is only the status square.</li><li>Use <code>--oh-line</code> for input borders; use <code>--oh-line-strong</code> (3.3 : 1).</li></ul></div>
+      </div>
+      <details class="code" data-css="tokens"><summary>CSS · Design tokens</summary></details>
+    </section>
+
+    <!-- TYPOGRAPHY -->
+    <section class="g-sec" id="type" data-title="Typography">
+      <div class="g-sec-h"><span class="no">03</span><h2>Typography</h2></div>
+      <p class="g-lede">One family: <b>Overpass</b>, based on Highway Gothic, the lettering on US road signs, plus <b>Overpass Mono</b> for anything you'd find on a work order. Only <code>.oh-display</code> is bold capitals. All other headings are sentence case in semibold.</p>
+      <div class="bench col" style="background:#fff">
+        <div class="typerow"><code>.oh-display</code><span class="oh-display" style="font-size:44px">Repair approved</span><span class="spec">Overpass 800 · 48/46 (64 desktop) · caps</span></div>
+        <div class="typerow"><code>.oh-h1</code><span class="oh-h1">Review this repair</span><span class="spec">Overpass 600 · 32/35 (38 desktop)</span></div>
+        <div class="typerow"><code>.oh-h2</code><span class="oh-h2">Front brake pads</span><span class="spec">Overpass 600 · 22/26</span></div>
+        <div class="typerow"><code>.oh-h3</code><span class="oh-h3">Ask your technician</span><span class="spec">Overpass 600 · 17/22</span></div>
+        <div class="typerow"><code>.oh-body</code><span class="oh-body">The pads are worn thin. Your shop recommends replacing the front pair to restore braking.</span><span class="spec">Overpass 400 · 15/23</span></div>
+        <div class="typerow"><code>.oh-small</code><span class="oh-small">Approving authorizes the work. You pay at pickup.</span><span class="spec">Overpass 400 · 13/19.5 · muted</span></div>
+        <div class="typerow"><code>.oh-label</code><span class="oh-label">Your visit · RO-1048</span><span class="spec">Overpass Mono 500 · 12 · blue</span></div>
+        <div class="typerow"><code>.oh-data</code><span class="oh-data">VIN 1HGCV1F3XJA000000 · 11:30 AM</span><span class="spec">Overpass Mono 400 · 14 · tabular</span></div>
+        <div class="typerow"><code>.oh-price</code><span class="oh-price">$260.00</span><span class="spec">Overpass Mono 600 · 22 · tabular</span></div>
+        <div class="typerow"><code>.oh-caption</code><span class="oh-caption">Sample estimate · no work is authorized in this demo</span><span class="spec">Overpass Mono 400 · 11.5/16</span></div>
+      </div>
+      <h3 class="g-sub">Where .oh-display is used</h3>
+      <div class="bench">
+        <div class="confirm-demo"><span class="oh-label">Screen 15 · Confirmation</span><span class="oh-display" style="font-size:40px">Repair approved</span><span class="oh-small" style="color:#e6f4f1">Miguel starts in Bay 02 at 11:45 AM.</span></div>
+        <div class="confirm-demo" style="background:var(--oh-navy)"><span class="oh-label" style="color:var(--oh-blue-on-navy)">Pickup counter</span><span class="oh-display" style="font-size:56px">Bay 02</span><span class="oh-small" style="color:var(--oh-muted-on-navy)">Show this to the advisor.</span></div>
+      </div>
+      <div class="rules">
+        <div class="info"><b>.oh-display is for</b><ul><li>Confirmations: "Repair approved", "Ready for pickup", "Update sent".</li><li>Large codes read across a counter: "Bay 02".</li><li>Style guide and marketing titles.</li></ul></div>
+        <div class="dont"><b>Don't</b><ul><li>Use .oh-display more than once per screen or for more than 3 words.</li><li>Set screen titles, card titles or buttons in capitals.</li><li>Go below 13 px for body text or 11 px for mono.</li></ul></div>
+      </div>
+      <details class="code" data-css="type"><summary>CSS · Typography</summary></details>
+    </section>
+
+    <!-- LAYOUT -->
+    <section class="g-sec" id="layout" data-title="Layout &amp; spacing">
+      <div class="g-sec-h"><span class="no">04</span><h2>Page layout &amp; spacing</h2></div>
+      <p class="g-lede">Spacing runs on a 4 px base. Customers get a single-column phone layout. Advisors get a desktop board with four status lanes. Corners are 6 px for surfaces and 3 px for small parts.</p>
+      <h3 class="g-sub">Spacing scale</h3>
+      <div class="bench col" style="background:#fff;gap:10px" id="spaces"></div>
+      <h3 class="g-sub">Grids</h3>
+      <div class="bench">
+        <div class="frame" style="width:220px">
+          <div class="bar">Top bar · 54 + 4 blue line</div>
+          <div style="padding:16px;display:grid;gap:14px">
+            <div>← 16 gutter →</div>
+            <div class="blk">Title block</div>
+            <div class="blk">Visit stages</div>
+            <div class="blk" style="height:56px">Hero card</div>
+            <div class="blk" style="height:90px">Action list</div>
+            <div>gap 14</div>
+          </div>
+          <div class="bar bottom">Tab bar · 60 + safe area</div>
+          <div style="padding:6px 8px;text-align:center">Phone · 375 pt · 1 column</div>
+        </div>
+        <div class="frame" style="flex:1 1 420px">
+          <div class="bar">Top bar · 62 · logo | section ············ status · alerts · account</div>
+          <div style="padding:24px;display:grid;gap:12px">
+            <div style="display:flex;justify-content:space-between"><span class="blk" style="flex:0 0 45%">Title + date</span><span class="blk" style="flex:0 0 35%">Stats</span></div>
+            <div class="blk">Toolbar · search 340 · filters · sort</div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+              <div class="blk" style="height:120px">Lane</div><div class="blk" style="height:90px">Lane</div><div class="blk" style="height:110px">Lane</div><div class="blk" style="height:70px">Lane</div>
+            </div>
+            <div>← 24 gutter · 4 lanes · 16 gap · max 1440 →</div>
+          </div>
+        </div>
+      </div>
+      <div class="rules">
+        <div class="info"><b>Breakpoints</b><ul><li><strong>&lt; 600 px</strong>: phone, 1 lane</li><li><strong>600–1023 px</strong>: tablet, 2 lanes</li><li><strong>≥ 1024 px</strong>: desktop, 4 lanes</li></ul></div>
+        <div><b>Do</b><ul><li>Space siblings with <code>gap</code>, not margins.</li><li>Use 14 px between blocks on mobile, 16–24 px on desktop.</li><li>Keep touch targets at least 44 × 44 px.</li></ul></div>
+      </div>
+      <details class="code" data-css="layout"><summary>CSS · Layout</summary></details>
+      <details class="code" data-css="base"><summary>CSS · Base</summary></details>
+    </section>
+
+    <!-- BUTTONS -->
+    <section class="g-sec" id="buttons" data-title="Buttons">
+      <div class="g-sec-h"><span class="no">05</span><h2>Buttons</h2></div>
+      <p class="g-lede">Buttons are Overpass Semibold in sentence case. The teal primary button has a darker bottom edge so it reads as something to press.</p>
+      <h3 class="g-sub">Variants</h3>
+      <div class="bench center">
+        <button class="oh-btn oh-btn--primary" type="button">Approve repair · $260</button>
+        <button class="oh-btn oh-btn--dark" type="button">Send update</button>
+        <button class="oh-btn oh-btn--secondary" type="button">Decline this repair</button>
+        <button class="oh-btn oh-btn--danger" type="button">Cancel visit</button>
+        <button class="oh-btn oh-btn--text" type="button">View estimate</button>
+      </div>
+      <h3 class="g-sub">Sizes &amp; states</h3>
+      <div class="bench center">
+        <button class="oh-btn oh-btn--primary oh-btn--sm" type="button">Small · 34</button>
+        <button class="oh-btn oh-btn--secondary oh-btn--sm" type="button"><svg viewBox="0 0 24 24" style="color:var(--oh-blue)"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>Enlarge evidence</button>
+        <button class="oh-btn oh-btn--primary oh-btn--icon" type="button" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M21 3L10 14M21 3l-7 18-4-7-7-4z"/></svg></button>
+        <button class="oh-btn oh-btn--secondary oh-btn--icon" type="button" aria-label="Record voice"><svg viewBox="0 0 24 24" style="color:var(--oh-blue)"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+        <button class="oh-btn oh-btn--primary" type="button" disabled>Disabled</button>
+        <button class="oh-btn oh-btn--primary" type="button" style="box-shadow:var(--oh-focus)">Focus ring</button>
+      </div>
+      <div class="rules">
+        <div><b>Do</b><ul><li>One teal button per screen or dialog.</li><li>Use a verb and object, and add the price when money is involved: "Approve repair · $260".</li><li>Stack full-width buttons on phones, primary on top.</li></ul></div>
+        <div class="dont"><b>Don't</b><ul><li>Use red for "Decline"; declining is a normal choice, so use secondary.</li><li>Make a button plain blue; blue is for wayfinding, teal is for action.</li><li>Write vague labels like "OK" or "Submit".</li></ul></div>
+      </div>
+      <details class="code" data-css="buttons"><summary>CSS · Buttons</summary></details>
+    </section>
+
+    <!-- ICONS -->
+    <section class="g-sec" id="icons" data-title="Icons">
+      <div class="g-sec-h"><span class="no">06</span><h2>Icons</h2></div>
+      <p class="g-lede">Line icons on a 24 px grid with a 1.8 px stroke and round caps, drawn in <code>currentColor</code>. Navy by default and blue when they lead a row or field. Sizes: 16 px next to text, 20 px in lists and tabs, 24 px on their own.</p>
+      <div class="bench"><div class="icon-grid" id="icons-grid"></div></div>
+      <div class="bench center" style="margin-top:12px">
+        <svg class="oh-icon oh-icon--16"><use href="#i-clock"/></svg><span class="oh-caption">16</span>
+        <svg class="oh-icon"><use href="#i-clock"/></svg><span class="oh-caption">20</span>
+        <svg class="oh-icon oh-icon--24"><use href="#i-clock"/></svg><span class="oh-caption">24</span>
+        <span style="width:24px"></span>
+        <svg class="oh-icon oh-icon--accent"><use href="#i-chat"/></svg><span class="oh-caption">.oh-icon--accent (blue)</span>
+      </div>
+      <div class="rules">
+        <div><b>Do</b><ul><li>Give icon-only buttons an <code>aria-label</code>.</li><li>Use the same icon for the same thing everywhere (clock = waiting time).</li></ul></div>
+        <div class="dont"><b>Don't</b><ul><li>Use emoji or filled icons, except play.</li><li>Use an icon alone for status; pair it with a word.</li></ul></div>
+      </div>
+      <details class="code" data-css="icons"><summary>CSS · Icons</summary></details>
+    </section>
+
+    <!-- DIALOGS -->
+    <section class="g-sec" id="dialogs" data-title="Dialogs">
+      <div class="g-sec-h"><span class="no">07</span><h2>Dialogs</h2></div>
+      <p class="g-lede">Dialogs confirm anything that authorizes work or money. They have a blue top edge, or red for destructive actions. On phones, use a bottom sheet so the buttons stay within thumb reach.</p>
+      <div class="bench">
+        <div class="scrim-demo">
+          <div class="oh-dialog inline-dialog" role="dialog" aria-labelledby="dlg-t1">
+            <div class="oh-dialog__head"><div><div class="oh-label">RO-1048 · Item 1 of 2</div><h4 class="oh-h2" id="dlg-t1" style="margin-top:6px">Approve front brake repair?</h4></div><button class="oh-dialog__close" type="button" aria-label="Close"><svg class="oh-icon"><use href="#i-x"/></svg></button></div>
+            <div class="oh-dialog__body">
+              <p class="oh-small" style="margin:0;color:var(--oh-ink)">Miguel will start in Bay 02 right away. You pay at pickup.</p>
+              <div class="oh-lines"><div><span>Parts</span><span>$140.00</span></div><div><span>Labor · 1.0 hr</span><span>$100.00</span></div><div><span>Tax</span><span>$20.00</span></div></div>
+              <div class="oh-total"><span class="oh-h3">Total</span><span class="oh-price">$260.00</span></div>
+            </div>
+            <div class="oh-dialog__foot"><button class="oh-btn oh-btn--primary oh-btn--block" type="button">Approve · $260</button><button class="oh-btn oh-btn--secondary oh-btn--block" type="button">Go back</button></div>
+          </div>
+        </div>
+        <div class="scrim-demo" style="flex-basis:300px">
+          <div class="oh-dialog oh-dialog--danger inline-dialog" role="alertdialog" aria-labelledby="dlg-t2">
+            <div class="oh-dialog__head"><h4 class="oh-h2" id="dlg-t2">Cancel this visit?</h4></div>
+            <div class="oh-dialog__body"><p class="oh-small" style="margin:0;color:var(--oh-ink)">Priya Shah will get an SMS. Approved work on RO-1048 stops. This can't be undone.</p></div>
+            <div class="oh-dialog__foot" style="grid-template-columns:1fr 1fr"><button class="oh-btn oh-btn--secondary" type="button">Keep visit</button><button class="oh-btn oh-btn--danger" type="button">Cancel visit</button></div>
+          </div>
+        </div>
+        <div class="sheet-demo">
+          <div class="oh-sheet">
+            <div class="oh-stack">
+              <div class="oh-label">Ready to decide</div>
+              <h4 class="oh-h2">Approve rear tire?</h4>
+              <p class="oh-small" style="margin:0">Plan soon · $235.00 · about 45 min in Bay 02.</p>
+              <button class="oh-btn oh-btn--primary oh-btn--block" type="button">Approve · $235</button>
+              <button class="oh-btn oh-btn--secondary oh-btn--block" type="button">Not now</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="bench center" style="margin-top:12px;background:#fff">
+        <button class="oh-btn oh-btn--dark oh-btn--sm" type="button" id="openDlg">Open live dialog</button>
+        <span class="oh-caption">Uses the native &lt;dialog&gt; element. Esc closes it, and focus returns to the button.</span>
+      </div>
+      <dialog class="oh-dialog" id="liveDlg" aria-labelledby="dlg-live">
+        <form method="dialog">
+          <div class="oh-dialog__head"><div><div class="oh-label">RO-1048 · Item 1 of 2</div><h4 class="oh-h2" id="dlg-live" style="margin-top:6px">Approve front brake repair?</h4></div><button class="oh-dialog__close" value="close" aria-label="Close"><svg class="oh-icon"><use href="#i-x"/></svg></button></div>
+          <div class="oh-dialog__body"><div class="oh-total" style="border:0;padding:0"><span class="oh-small">Total incl. tax</span><span class="oh-price">$260.00</span></div></div>
+          <div class="oh-dialog__foot"><button class="oh-btn oh-btn--primary oh-btn--block" value="ok">Approve · $260</button><button class="oh-btn oh-btn--secondary oh-btn--block" value="cancel">Go back</button></div>
+        </form>
+      </dialog>
+      <div class="rules">
+        <div><b>Do</b><ul><li>Write the title as a question that names the item: "Approve front brake repair?"</li><li>Restate the total and what happens next.</li><li>Trap focus, close on Esc, and return focus to the trigger.</li></ul></div>
+        <div class="dont"><b>Don't</b><ul><li>Use a dialog just to show information; use a notice instead.</li><li>Open a dialog on top of another dialog.</li></ul></div>
+      </div>
+      <details class="code" data-css="dialogs"><summary>CSS · Dialogs</summary></details>
+    </section>
+
+    <!-- MENUS -->
+    <section class="g-sec" id="menus" data-title="Menus">
+      <div class="g-sec-h"><span class="no">08</span><h2>Menus</h2></div>
+      <p class="g-lede">Menus drop from a trigger on the advisor desk: filters, the account menu and actions on a work order. Icons are blue, hover is a pale blue tint, and destructive items are red below a rule.</p>
+      <div class="bench" style="min-height:300px">
+        <div class="oh-menu-wrap">
+          <button class="oh-menu-trigger" type="button" aria-haspopup="menu" aria-expanded="false" id="advTrig">All advisors <svg class="oh-icon oh-icon--16 oh-icon--accent"><use href="#i-chevron-down"/></svg></button>
+          <ul class="oh-menu" role="menu" id="advMenu" hidden>
+            <li class="oh-menu__label">Filter by advisor</li>
+            <li><button class="oh-menu__item" role="menuitemradio" aria-checked="true" type="button"><svg class="oh-icon oh-icon--16"><use href="#i-check"/></svg>All advisors<kbd>8</kbd></button></li>
+            <li><button class="oh-menu__item" role="menuitemradio" aria-checked="false" type="button"><span></span>Alex<kbd>5</kbd></button></li>
+            <li><button class="oh-menu__item" role="menuitemradio" aria-checked="false" type="button"><span></span>Jordan<kbd>3</kbd></button></li>
+          </ul>
+        </div>
+        <ul class="oh-menu" role="menu" aria-label="Work order actions">
+          <li class="oh-menu__label">RO-1048 · Priya Shah</li>
+          <li><button class="oh-menu__item" role="menuitem" type="button"><svg class="oh-icon oh-icon--16"><use href="#i-send"/></svg>Send update<kbd>U</kbd></button></li>
+          <li><button class="oh-menu__item" role="menuitem" type="button"><svg class="oh-icon oh-icon--16"><use href="#i-phone"/></svg>Call customer</button></li>
+          <li><button class="oh-menu__item" role="menuitem" type="button"><svg class="oh-icon oh-icon--16"><use href="#i-wrench"/></svg>Change bay</button></li>
+          <li class="oh-menu__sep" role="separator"></li>
+          <li><button class="oh-menu__item oh-menu__item--danger" role="menuitem" type="button"><svg class="oh-icon oh-icon--16"><use href="#i-x"/></svg>Cancel visit…</button></li>
+        </ul>
+        <ul class="oh-menu" role="menu" aria-label="Account" style="min-width:200px">
+          <li class="oh-menu__label">Alex · Service advisor</li>
+          <li><button class="oh-menu__item" role="menuitem" type="button"><svg class="oh-icon oh-icon--16"><use href="#i-user"/></svg>Profile</button></li>
+          <li><button class="oh-menu__item" role="menuitem" type="button"><svg class="oh-icon oh-icon--16"><use href="#i-clock"/></svg>Shop hours</button></li>
+          <li class="oh-menu__sep" role="separator"></li>
+          <li><button class="oh-menu__item" role="menuitem" type="button"><svg class="oh-icon oh-icon--16"><use href="#i-logout"/></svg>Sign out</button></li>
+        </ul>
+      </div>
+      <p class="kbd-note">Try the "All advisors" trigger. Arrow keys move between items, and Esc closes the menu.</p>
+      <div class="rules">
+        <div><b>Do</b><ul><li>Group items under a mono label, and put destructive items below a rule.</li><li>End an item with "…" when it opens a dialog.</li></ul></div>
+        <div class="dont"><b>Don't</b><ul><li>Hide the only path to a main action inside a menu.</li><li>Put more than about 7 items in one menu.</li></ul></div>
+      </div>
+      <details class="code" data-css="menus"><summary>CSS · Menus</summary></details>
+    </section>
+
+    <!-- FORMS -->
+    <section class="g-sec" id="forms" data-title="Forms">
+      <div class="g-sec-h"><span class="no">09</span><h2>Forms</h2></div>
+      <p class="g-lede">Inputs are white with a 3.3 : 1 border. Focus adds a blue border and a soft blue ring. Checked controls turn teal. Labels sit above the field in Overpass Semibold.</p>
+      <div class="bench" style="align-items:stretch">
+        <div class="oh-stack" style="flex:1 1 280px">
+          <div class="oh-field"><label class="oh-field__label" for="f-name">Customer name</label><input class="oh-input" id="f-name" value="Priya Shah"></div>
+          <div class="oh-field"><label class="oh-field__label" for="f-phone">Mobile number</label><input class="oh-input" id="f-phone" value="412-555-01" aria-invalid="true" aria-describedby="f-phone-err"><span class="oh-field__error" id="f-phone-err"><svg class="oh-icon oh-icon--16"><use href="#i-alert"/></svg>Enter all 10 digits so we can text updates.</span></div>
+          <div class="oh-field"><label class="oh-field__label" for="f-vin">VIN</label><input class="oh-input" id="f-vin" value="1HGCV1F3XJA000000" disabled style="font-family:var(--oh-font-mono)"><span class="oh-field__help">Read from the check-in scan. Can't be edited.</span></div>
+          <div class="oh-field"><label class="oh-field__label" for="f-search">Search visits</label><div class="oh-search"><svg class="oh-icon oh-icon--16"><use href="#i-search"/></svg><input class="oh-input" id="f-search" placeholder="Customer, vehicle or RO #"></div></div>
+        </div>
+        <div class="oh-stack" style="flex:1 1 280px">
+          <div class="oh-field"><label class="oh-field__label" for="f-bay">Bay</label><select class="oh-select" id="f-bay"><option>Bay 01</option><option selected>Bay 02</option><option>Bay 03</option></select></div>
+          <div class="oh-field"><label class="oh-field__label" for="f-q">Question for your technician</label><textarea class="oh-textarea" id="f-q" placeholder="e.g. Do I need to replace both front pads?"></textarea><span class="oh-field__help">Miguel usually replies within 15 minutes.</span></div>
+          <fieldset class="oh-field" style="border:0;padding:0;margin:0"><legend class="oh-field__label" style="margin-bottom:6px">Preferred channel</legend>
+            <div class="oh-segment" role="group" aria-label="Preferred channel"><button type="button" aria-pressed="true">SMS</button><button type="button" aria-pressed="false">Email</button><button type="button" aria-pressed="false">Call</button></div>
+          </fieldset>
+        </div>
+        <div class="oh-stack" style="flex:1 1 260px">
+          <label class="oh-check"><input type="checkbox" id="f-c1" checked>Text me when the car is ready</label>
+          <label class="oh-check"><input type="checkbox" id="f-c2">Save this card for future visits</label>
+          <label class="oh-check"><input type="radio" name="pick" id="f-r1" checked>I'll pick up at the shop</label>
+          <label class="oh-check"><input type="radio" name="pick" id="f-r2">Drop it at my home (+$25)</label>
+          <label class="oh-switch"><input type="checkbox" role="switch" id="f-s1" checked>Live bay camera</label>
+          <div class="oh-panel oh-stack" style="margin-top:6px">
+            <span class="oh-h3">Can this repair wait?</span>
+            <div class="oh-timing" role="group" aria-label="Repair timing" id="timing">
+              <button type="button" aria-pressed="false" style="--c:var(--oh-teal)">Now</button>
+              <button type="button" aria-pressed="true" style="--c:var(--oh-amber)">3 months</button>
+              <button type="button" aria-pressed="false" style="--c:var(--oh-red)">6 months</button>
+            </div>
+            <span class="oh-caption" id="timing-out">3 months · risk rises · est. $235–$310</span>
+          </div>
+        </div>
+      </div>
+      <h3 class="g-sub">Chat composer</h3>
+      <div class="bench">
+        <label class="oh-panel" for="f-comp" style="display:flex;align-items:center;gap:6px;padding:6px 6px 6px 12px;border-color:var(--oh-line-strong);flex:1 1 360px;max-width:480px">
+          <input id="f-comp" placeholder="Type your question…" style="all:unset;flex:1;min-width:0;font:15px var(--oh-font)">
+          <button class="oh-btn oh-btn--secondary oh-btn--icon" type="button" aria-label="Record voice" style="width:38px;min-height:38px"><svg viewBox="0 0 24 24" style="color:var(--oh-blue)"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+          <button class="oh-btn oh-btn--primary oh-btn--icon" type="button" aria-label="Send" style="width:38px;min-height:38px"><svg viewBox="0 0 24 24"><path d="M21 3L10 14M21 3l-7 18-4-7-7-4z"/></svg></button>
+        </label>
+      </div>
+      <div class="rules">
+        <div><b>Do</b><ul><li>Always show a visible label; placeholders are only examples.</li><li>Write errors that say how to fix the problem.</li><li>Use mono for codes like VIN and RO numbers.</li></ul></div>
+        <div class="dont"><b>Don't</b><ul><li>Show an error before the person has finished the field.</li><li>Use a switch for a choice that needs a Save button; use a checkbox.</li></ul></div>
+      </div>
+      <details class="code" data-css="forms"><summary>CSS · Forms</summary></details>
+    </section>
+
+    <!-- TABLES -->
+    <section class="g-sec" id="tables" data-title="Tables">
+      <div class="g-sec-h"><span class="no">10</span><h2>Tables</h2></div>
+      <p class="g-lede">Tables look like a printed repair order: a navy rule under the header, light rules between rows, a dashed rule above the total, and numbers right-aligned in mono.</p>
+      <h3 class="g-sub">Estimate · customer</h3>
+      <div class="oh-table-wrap">
+        <table class="oh-table">
+          <caption>Estimate · RO-1048</caption>
+          <thead><tr><th>Item</th><th>Status</th><th class="oh-num">Parts</th><th class="oh-num">Labor</th><th class="oh-num">Total</th></tr></thead>
+          <tbody>
+            <tr><td>Front brake pads</td><td><span class="oh-status oh-status--red">Needs attention</span></td><td class="oh-num">$140.00</td><td class="oh-num">$100.00</td><td class="oh-num">$260.00</td></tr>
+            <tr><td>Rear tire tread</td><td><span class="oh-status oh-status--amber">Plan soon</span></td><td class="oh-num">$175.00</td><td class="oh-num">$60.00</td><td class="oh-num">$235.00</td></tr>
+            <tr><td>Multi-point inspection</td><td><span class="oh-status oh-status--ok">Completed</span></td><td class="oh-num">—</td><td class="oh-num">$0.00</td><td class="oh-num">$0.00</td></tr>
+          </tbody>
+          <tfoot><tr><td colspan="4">Total incl. tax</td><td class="oh-num">$495.00</td></tr></tfoot>
+        </table>
+      </div>
+      <h3 class="g-sub">Visit list · advisor · compact</h3>
+      <div class="oh-table-wrap">
+        <table class="oh-table oh-table--compact">
+          <thead><tr><th>RO</th><th>Customer</th><th>Vehicle</th><th>Bay</th><th>Status</th><th class="oh-num">Waiting</th><th class="oh-num">Estimate</th></tr></thead>
+          <tbody>
+            <tr aria-selected="true"><td class="oh-num" style="text-align:left">1048</td><td>Priya Shah</td><td>2018 Honda Civic</td><td><span class="oh-tag">Bay 02</span></td><td><span class="oh-status oh-status--info">Needs update</span></td><td class="oh-num" style="color:var(--oh-red)">42 min</td><td class="oh-num">$495</td></tr>
+            <tr><td class="oh-num" style="text-align:left">1046</td><td>Elena Rodriguez</td><td>2019 Subaru Outback</td><td><span class="oh-tag">Bay 01</span></td><td><span class="oh-status oh-status--info">Awaiting approval</span></td><td class="oh-num" style="color:var(--oh-red)">1 h 12 min</td><td class="oh-num">$480</td></tr>
+            <tr><td class="oh-num" style="text-align:left">1043</td><td>James Wilson</td><td>2022 Ford Escape</td><td><span class="oh-tag">Bay 05</span></td><td><span class="oh-status oh-status--info">In repair</span></td><td class="oh-num">54 min</td><td class="oh-num">$405</td></tr>
+            <tr><td class="oh-num" style="text-align:left">1041</td><td>Noah Thompson</td><td>2016 Toyota Camry</td><td><span class="oh-tag">Bay 08</span></td><td><span class="oh-status oh-status--ok">Ready for pickup</span></td><td class="oh-num">16 min</td><td class="oh-num">$225</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="rules">
+        <div><b>Do</b><ul><li>Wrap every table in <code>.oh-table-wrap</code> so it scrolls sideways on phones.</li><li>Mark the open row with <code>aria-selected="true"</code>.</li><li>Use the blue info status for workflow stages and red or amber only for repair findings.</li></ul></div>
+        <div class="dont"><b>Don't</b><ul><li>Use zebra stripes; the rules already guide the eye.</li><li>Center-align numbers.</li></ul></div>
+      </div>
+      <details class="code" data-css="tables"><summary>CSS · Tables</summary></details>
+    </section>
+
+    <!-- PATTERNS -->
+    <section class="g-sec" id="patterns" data-title="Design patterns">
+      <div class="g-sec-h"><span class="no">11</span><h2>Design patterns</h2></div>
+      <p class="g-lede">Reusable pieces built from the elements above: navigation, status, cards, conversation and feedback.</p>
+
+      <h3 class="g-sub">Navigation · customer phone</h3>
+      <div class="bench">
+        <div class="phone-mini">
+          <div class="oh-topbar"><a class="oh-logo" href="#patterns"><span class="oh-logo__mark"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></span><span class="oh-logo__word">OpenHood</span></a><span class="oh-topbar__end"><span class="oh-tag oh-tag--navy" style="box-shadow:inset 0 0 0 1px var(--oh-navy-line)">RO-1048</span></span></div>
+          <div class="body">
+            <a class="oh-back" href="#patterns"><svg class="oh-icon oh-icon--16"><use href="#i-chevron-left"/></svg>Main page</a>
+            <div><div class="oh-label">Your visit</div><h4 class="oh-h1" style="margin-top:6px">Hi, Priya.</h4></div>
+            <div class="oh-panel oh-stack" style="gap:10px">
+              <div style="display:flex;justify-content:space-between"><span class="oh-h3">Waiting for your review</span><span class="oh-caption">3 of 5</span></div>
+              <ol class="oh-stages"><li class="is-done">Check-in</li><li class="is-done">Inspect</li><li aria-current="step">Your review</li><li>Repair</li><li>Pickup</li></ol>
+            </div>
+          </div>
+          <nav class="oh-tabbar" aria-label="Customer"><a href="#patterns" aria-current="page"><svg class="oh-icon"><use href="#i-home"/></svg>My car</a><a href="#patterns"><svg class="oh-icon"><use href="#i-car"/></svg>Inspection</a><a href="#patterns"><svg class="oh-icon"><use href="#i-help"/></svg>Help</a></nav>
+        </div>
+        <div class="rules" style="flex:1 1 300px;margin:0;align-content:start">
+          <div class="info"><b>Top bar</b>Logo on the left and the RO tag on the right. Always navy with a 4 px blue line. It never scrolls away on the advisor desk.</div>
+          <div class="info"><b>Tab bar</b>Three tabs at most: My car, Inspection, Help. The active tab gets white text and a 3 px blue bar.</div>
+          <div class="info"><b>Back link</b>A small blue link at the top left that names where it goes ("‹ Main page"). It replaces the full-width back button from the draft.</div>
+          <div class="info"><b>Visit stages</b>Five stages. Done stages are teal, the current stage is blue, and later stages are gray.</div>
+        </div>
+      </div>
+
+      <h3 class="g-sub">Navigation · advisor desk</h3>
+      <div class="bench col" style="padding:0;overflow:hidden;background:#fff">
+        <div class="oh-topbar">
+          <a class="oh-logo" href="#patterns"><span class="oh-logo__mark"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></span><span class="oh-logo__word">OpenHood</span></a>
+          <span class="oh-topbar__section">Service desk</span>
+          <span class="oh-topbar__end">
+            <span style="position:relative;display:grid;place-items:center;width:36px;height:36px;border:1px solid var(--oh-navy-line);border-radius:6px;color:#fff"><svg class="oh-icon"><use href="#i-bell"/></svg><span class="oh-count" style="position:absolute;top:-7px;right:-7px">3</span></span>
+            <span style="display:inline-flex;align-items:center;gap:8px;color:#fff;font:500 13.5px/1 var(--oh-font)">Alex · Service advisor<svg class="oh-icon oh-icon--16" style="color:var(--oh-blue-on-navy)"><use href="#i-chevron-down"/></svg></span>
+          </span>
+        </div>
+        <div style="padding:14px 24px"><ol class="oh-crumbs"><li><a href="#patterns">Service desk</a></li><li><a href="#patterns">RO-1048</a></li><li aria-current="page">Chat with Priya</li></ol></div>
+      </div>
+
+      <h3 class="g-sub">Status, tags &amp; counts</h3>
+      <div class="bench center">
+        <span class="oh-status oh-status--red">Needs attention</span>
+        <span class="oh-status oh-status--amber">Plan soon</span>
+        <span class="oh-status oh-status--ok">Completed</span>
+        <span class="oh-status oh-status--info">In repair</span>
+        <span class="oh-tag">Bay 02</span>
+        <span class="oh-tag oh-tag--navy">RO-1048</span>
+        <span class="oh-tag oh-tag--outline">Today</span>
+        <span class="oh-count">3</span>
+        <span class="oh-wait oh-wait--late"><svg class="oh-icon oh-icon--16"><use href="#i-clock"/></svg>Waiting 42 min</span>
+      </div>
+      <details class="code" data-css="status"><summary>CSS · Status, tags &amp; counts</summary></details>
+
+      <h3 class="g-sub">Cards</h3>
+      <div class="bench" style="align-items:flex-start">
+        <div class="oh-stack" style="flex:1 1 300px;max-width:360px">
+          <a class="oh-hero" href="#patterns"><span class="oh-label">Multi-point inspection</span><span class="oh-h2" style="display:flex;align-items:center;gap:8px">Inspect damage in 3D<svg class="oh-icon" style="color:var(--oh-blue-on-navy)"><use href="#i-arrow-up-right"/></svg></span><span class="oh-cluster"><span class="oh-status oh-status--red">1 needs attention</span><span class="oh-status oh-status--amber">1 plan soon</span></span></a>
+          <div class="oh-list">
+            <a class="oh-list__row" href="#patterns"><svg class="oh-icon"><use href="#i-chat"/></svg><span><span class="oh-list__title">Ask your technician</span><span class="oh-list__sub">Plain-language answers by text or voice.</span></span><svg class="oh-icon oh-icon--16"><use href="#i-chevron-right"/></svg></a>
+            <a class="oh-list__row" href="#patterns"><svg class="oh-icon"><use href="#i-video"/></svg><span><span class="oh-list__title">Watch the bay live</span><span class="oh-list__sub">Switch camera angles during repair.</span></span><svg class="oh-icon oh-icon--16"><use href="#i-chevron-right"/></svg></a>
+          </div>
+        </div>
+        <article class="oh-finding" style="flex:1 1 280px;max-width:340px">
+          <div style="display:flex;justify-content:space-between;align-items:start;gap:10px"><h4 class="oh-h2">Front brake pads</h4><span class="oh-caption">Front left</span></div>
+          <span class="oh-status oh-status--red" style="justify-self:start">Needs attention</span>
+          <p class="oh-small" style="margin:0;color:var(--oh-ink)">Measured 3 mm. Minimum safe thickness is 4 mm.</p>
+          <div class="oh-lines"><div><span>Parts</span><span>$140.00</span></div><div><span>Labor · 1.0 hr</span><span>$100.00</span></div><div><span>Tax</span><span>$20.00</span></div></div>
+          <div class="oh-total"><span class="oh-h3">Total</span><span class="oh-price">$260.00</span></div>
+        </article>
+        <article class="oh-wo" aria-current="true" style="flex:1 1 260px;max-width:300px">
+          <div class="oh-wo__head"><span>RO-1048</span><span class="oh-tag">Bay 02</span></div>
+          <div class="oh-wo__body">
+            <div><span class="oh-h3" style="display:block;font-size:18px">Priya Shah</span><span class="oh-small">2018 Honda Civic</span></div>
+            <div style="display:grid;grid-template-columns:1fr auto;gap:5px 8px;font-size:14px"><span>Front brake pads</span><span class="oh-data">$260</span><span class="oh-status oh-status--red" style="justify-self:start">Needs attention</span></div>
+            <div style="display:grid;grid-template-columns:1fr auto;gap:5px 8px;font-size:14px"><span>Rear tire tread</span><span class="oh-data">$235</span><span class="oh-status oh-status--amber" style="justify-self:start">Plan soon</span></div>
+          </div>
+          <div class="oh-wo__foot"><span class="oh-wait oh-wait--late"><svg class="oh-icon oh-icon--16"><use href="#i-clock"/></svg>42 min</span><button class="oh-btn oh-btn--primary oh-btn--sm" type="button">Send update</button></div>
+        </article>
+      </div>
+      <div class="rules">
+        <div class="info"><b>Which card</b><ul><li><strong>Hero</strong>: the single most important next step on a screen. One per screen.</li><li><strong>List</strong>: grouped navigation rows in one panel, not separate cards.</li><li><strong>Finding</strong>: one inspection item; the left edge shows its status.</li><li><strong>Work order</strong>: one visit on the advisor board.</li></ul></div>
+      </div>
+      <details class="code" data-css="cards"><summary>CSS · Cards</summary></details>
+
+      <h3 class="g-sub">Conversation &amp; feedback</h3>
+      <div class="bench" style="align-items:flex-start">
+        <div class="oh-stack" style="flex:1 1 320px;max-width:400px">
+          <div class="oh-bubble oh-bubble--me"><span class="oh-bubble__who">You · 11:28</span>Hi Miguel, I have a question about the front pads.</div>
+          <div class="oh-bubble oh-bubble--them"><span class="oh-bubble__who">Miguel · Technician · 11:31</span>The front pads are worn thin. Replacing both helps restore even braking.</div>
+          <div class="oh-cluster"><button class="oh-chip" type="button">Why both pads?</button><button class="oh-chip" type="button">Can it wait?</button><button class="oh-chip" type="button">What does it cost?</button></div>
+        </div>
+        <div class="oh-stack" style="flex:1 1 320px;max-width:400px">
+          <div class="oh-toast" role="status"><span class="oh-toast__icon"><svg class="oh-icon"><use href="#i-check"/></svg></span><div style="flex:1"><b style="display:block;font-size:14.5px;font-weight:600">Priya approved front brakes · $260</b><span class="oh-toast__meta">Just now · customer update needed</span></div></div>
+          <div class="oh-notice oh-notice--info"><svg class="oh-icon"><use href="#i-info"/></svg><div><b style="font-weight:600">3D model unavailable</b><div class="oh-small">You can still review every finding and photo in the list view.</div></div></div>
+          <div class="oh-notice oh-notice--warn"><svg class="oh-icon"><use href="#i-clock"/></svg><div><b style="font-weight:600">Replies may be slower</b><div class="oh-small">Miguel is working on your car. Expect an answer in about 15 minutes.</div></div></div>
+          <div class="oh-notice oh-notice--error"><svg class="oh-icon"><use href="#i-alert"/></svg><div><b style="font-weight:600">Message not sent</b><div class="oh-small">Check your connection, then tap Send again.</div></div></div>
+        </div>
+      </div>
+      <div class="rules">
+        <div><b>Do</b><ul><li>Use toasts to confirm something that already happened; they disappear after 6 seconds.</li><li>Leave notices on the page until the problem is fixed.</li></ul></div>
+        <div class="dont"><b>Don't</b><ul><li>Put an action that can't be redone only in a toast.</li><li>Show more than one toast at a time.</li></ul></div>
+      </div>
+      <details class="code" data-css="feedback"><summary>CSS · Conversation &amp; feedback</summary></details>
+      <details class="code" data-css="nav"><summary>CSS · Navigation</summary></details>
+    </section>
+
+    <footer class="g-foot">
+      <span>OpenHood · Service Bay style guide v2.0 · Nov 23, 2026</span>
+      <span>Fonts: Overpass, Overpass Mono (SIL Open Font License)</span>
+    </footer>
+  </main>
+</div>
+</div>
+
+<script>
+(function () {
+  const cssText = document.getElementById("oh-css").textContent;
+  const parts = {};
+  const re = /\/\* @section (\w+) \*\/\n([\s\S]*?)(?=\/\* @section |\s*@media \(prefers-reduced-motion[\s\S]*$|$)/g;
+  let m; while ((m = re.exec(cssText))) parts[m[1]] = m[2].trim();
+  const motion = cssText.match(/@media \(prefers-reduced-motion[\s\S]*$/);
+  if (motion && parts.buttons) parts.buttons += "\n\n" + motion[0].trim();
+  const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const paint = s => esc(s).replace(/(\/\*[\s\S]*?\*\/)/g, '<span class="c">$1</span>').replace(/(--oh-[\w-]+)/g, '<span class="p">$1</span>');
+  async function copy(text, btn) {
+    const old = btn.textContent;
+    try { await navigator.clipboard.writeText(text); btn.textContent = "Copied"; }
+    catch (e) {
+      const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); btn.textContent = "Copied"; } catch (_) { btn.textContent = "Select & copy"; }
+      ta.remove();
+    }
+    setTimeout(() => btn.textContent = old, 1600);
+  }
+  document.querySelectorAll("details.code").forEach(d => {
+    const code = parts[d.dataset.css] || "";
+    const sum = d.querySelector("summary");
+    sum.insertAdjacentHTML("beforeend", ` <span class="lines">${code.split("\n").length} lines</span>`);
+    const b = document.createElement("button"); b.className = "copy"; b.type = "button"; b.textContent = "Copy";
+    b.addEventListener("click", e => { e.preventDefault(); copy(code, b); });
+    sum.appendChild(b);
+    const pre = document.createElement("pre"); pre.innerHTML = paint(code); d.appendChild(pre);
+  });
+  document.getElementById("copyAll").addEventListener("click", e => copy(cssText.trim(), e.currentTarget));
+
+  const secs = [...document.querySelectorAll("section.g-sec")];
+  const toc = document.getElementById("toc");
+  toc.innerHTML = secs.map((s, i) => `<li><a href="#${s.id}"><span>${String(i + 1).padStart(2, "0")}</span>${s.dataset.title}</a></li>`).join("");
+  const links = [...toc.querySelectorAll("a")];
+  const spy = () => {
+    let cur = secs[0].id;
+    secs.forEach(s => { if (s.getBoundingClientRect().top < 140) cur = s.id; });
+    links.forEach(a => a.classList.toggle("is-on", a.getAttribute("href") === "#" + cur));
+  };
+  addEventListener("scroll", spy, { passive: true }); spy();
+
+  const css = getComputedStyle(document.documentElement);
+  const sw = (id, list) => document.getElementById(id).innerHTML = list.map(([t, n, use, ratio]) => {
+    const v = css.getPropertyValue(t).trim();
+    return `<div class="sw"><i style="background:var(${t})"></i><div><b>${n}</b><code>${t}<br>${v.toUpperCase()}</code><small>${use}</small>${ratio ? `<span class="ratio">${ratio}</span>` : ""}</div></div>`;
+  }).join("");
+  sw("sw-brand", [
+    ["--oh-navy", "Navy", "Top bar, tab bar, text, dark cards, your chat bubbles.", "White on it 14.7 : 1"],
+    ["--oh-blue", "Blue", "Current step, active tab, icons, focus ring, logo tile. Fills only.", "UI on white 3.8 : 1"],
+    ["--oh-blue-text", "Blue text", "Links, labels, small blue text.", "On white 5.3 : 1"],
+    ["--oh-blue-tint", "Blue tint", "Hover, selected row, info status.", ""],
+    ["--oh-teal", "Teal", "Primary buttons, done stages, ready status.", "White on it 6.0 : 1"],
+    ["--oh-teal-tint", "Teal tint", "Background of completed status.", ""]
+  ]);
+  sw("sw-status", [
+    ["--oh-red", "Red", "Needs attention, errors, late waits, destructive confirm.", "On tint 4.9 : 1"],
+    ["--oh-red-tint", "Red tint", "Background of red status and errors.", ""],
+    ["--oh-amber", "Amber", "Plan-soon square and card edge only. No text on it.", ""],
+    ["--oh-amber-text", "Amber text", "Words in plan-soon status.", "On tint 5.8 : 1"],
+    ["--oh-amber-tint", "Amber tint", "Background of plan-soon status.", ""]
+  ]);
+  sw("sw-neutral", [
+    ["--oh-canvas", "Canvas", "Page background.", "Navy on it 13.1 : 1"],
+    ["--oh-paper", "Paper", "Cards, panels, inputs, dialogs.", ""],
+    ["--oh-muted", "Muted", "Secondary text.", "On white 6.1 : 1"],
+    ["--oh-line", "Line", "Dividers and card borders only.", ""],
+    ["--oh-line-strong", "Line strong", "Input and button borders.", "UI 3.3 : 1"],
+    ["--oh-muted-on-navy", "Muted on navy", "Secondary text on navy.", "On navy 5.4 : 1"]
+  ]);
+
+  document.getElementById("spaces").innerHTML = [1,2,3,4,5,6,7,8].map(i => {
+    const v = css.getPropertyValue("--oh-space-" + i).trim();
+    return `<div class="space-row"><code>--oh-space-${i}</code><span>${v}</span><i style="width:${v}"></i></div>`;
+  }).join("");
+
+  const icons = ["arrow-up-right","chevron-left","chevron-right","chevron-down","home","car","3d","help","chat","video","camera","clipboard","clock","bell","search","sort","send","mic","play","check","x","expand","alert","info","wrench","phone","user","more","logout"];
+  document.getElementById("icons-grid").innerHTML = icons.map(n => `<div><svg class="oh-icon oh-icon--24${n === "play" ? " oh-icon--fill" : ""}"><use href="#i-${n}"/></svg>${n}</div>`).join("");
+
+  const dlg = document.getElementById("liveDlg"), opener = document.getElementById("openDlg");
+  opener.addEventListener("click", () => { if (dlg.showModal) dlg.showModal(); });
+  dlg.addEventListener("close", () => opener.focus());
+
+  const trig = document.getElementById("advTrig"), menu = document.getElementById("advMenu");
+  const items = [...menu.querySelectorAll(".oh-menu__item")];
+  const setOpen = o => { menu.hidden = !o; trig.setAttribute("aria-expanded", String(o)); if (o) items[0].focus(); };
+  trig.addEventListener("click", () => setOpen(menu.hidden));
+  menu.addEventListener("keydown", e => {
+    const i = items.indexOf(document.activeElement);
+    if (e.key === "ArrowDown") { e.preventDefault(); items[(i + 1) % items.length].focus(); }
+    if (e.key === "ArrowUp") { e.preventDefault(); items[(i - 1 + items.length) % items.length].focus(); }
+    if (e.key === "Escape") { setOpen(false); trig.focus(); }
+  });
+  items.forEach(it => it.addEventListener("click", () => {
+    items.forEach(x => { x.setAttribute("aria-checked", "false"); x.firstElementChild.outerHTML = "<span></span>"; });
+    it.setAttribute("aria-checked", "true");
+    it.firstElementChild.outerHTML = '<svg class="oh-icon oh-icon--16"><use href="#i-check"/></svg>';
+    trig.firstChild.textContent = it.textContent.replace(/\d+$/, "").trim() + " ";
+    setOpen(false); trig.focus();
+  }));
+  document.addEventListener("click", e => { if (!e.target.closest(".oh-menu-wrap")) { menu.hidden = true; trig.setAttribute("aria-expanded", "false"); } });
+
+  document.querySelectorAll(".oh-segment").forEach(g => g.addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    g.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  }));
+  const tOut = { "Now": "Now · lowest risk · $235", "3 months": "3 months · risk rises · est. $235–$310", "6 months": "6 months · may damage rotor · est. $310–$520" };
+  document.getElementById("timing").addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    e.currentTarget.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    document.getElementById("timing-out").textContent = tOut[b.textContent.trim()];
+  });
+  document.querySelectorAll('a[href="#patterns"]').forEach(a => a.addEventListener("click", e => e.preventDefault()));
+})();
+</script>
